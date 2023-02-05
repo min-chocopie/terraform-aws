@@ -22,6 +22,14 @@ resource "kubernetes_deployment" "simple-client" {
           port {
             container_port = var.client_port
           }
+          resources {
+            requests = {
+              cpu = "250m"
+            }
+            limits = {
+              cpu = "500m"
+            }
+          }
         }
       }
     }
@@ -69,5 +77,24 @@ resource "kubernetes_ingress_v1" "alb" {
         }
       }
     }
+  }
+}
+
+resource "kubernetes_horizontal_pod_autoscaler" "simple-client" {
+  metadata {
+    name = var.client_name
+  }
+
+  spec {
+    max_replicas = 10
+    min_replicas = 3
+
+    scale_target_ref {
+      api_version = "apps/v1"
+      kind        = "Deployment"
+      name        = var.client_name
+    }
+
+    target_cpu_utilization_percentage = 50
   }
 }

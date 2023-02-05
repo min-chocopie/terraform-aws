@@ -52,6 +52,14 @@ resource "kubernetes_deployment" "simple-server" {
           port {
             container_port = var.server_port
           }
+          resources {
+            requests = {
+              cpu = "250m"
+            }
+            limits = {
+              cpu = "500m"
+            }
+          }
         }
       }
     }
@@ -70,5 +78,24 @@ resource "kubernetes_service" "simple-server" {
       port        = var.server_port
       target_port = var.server_port
     }
+  }
+}
+
+resource "kubernetes_horizontal_pod_autoscaler" "simple-server" {
+  metadata {
+    name = var.server_name
+  }
+
+  spec {
+    max_replicas = 10
+    min_replicas = 3
+
+    scale_target_ref {
+      api_version = "apps/v1"
+      kind        = "Deployment"
+      name        = var.server_name
+    }
+
+    target_cpu_utilization_percentage = 50
   }
 }
