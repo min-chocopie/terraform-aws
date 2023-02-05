@@ -24,10 +24,10 @@ resource "kubernetes_deployment" "simple-client" {
           }
           resources {
             requests = {
-              cpu = "250m"
+              cpu = "250m" # 0.25vCPU
             }
             limits = {
-              cpu = "500m"
+              cpu = "250m"
             }
           }
         }
@@ -95,6 +95,6 @@ resource "kubernetes_horizontal_pod_autoscaler" "simple-client" {
       name        = var.client_name
     }
 
-    target_cpu_utilization_percentage = 50
+    target_cpu_utilization_percentage = 70
   }
 }

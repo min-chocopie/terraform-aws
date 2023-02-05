@@ -57,7 +57,7 @@ resource "kubernetes_deployment" "simple-server" {
               cpu = "250m"
             }
             limits = {
-              cpu = "500m"
+              cpu = "250m"
             }
           }
         }
@@ -96,6 +96,6 @@ resource "kubernetes_horizontal_pod_autoscaler" "simple-server" {
       name        = var.server_name
     }
 
-    target_cpu_utilization_percentage = 50
+    target_cpu_utilization_percentage = 70
   }
 }
